@@ -4,6 +4,21 @@ import { View, Text, StyleSheet, TouchableOpacity, Animated, TouchableWithoutFee
 const SideMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
     const animation = useState(new Animated.Value(-300))[0];
+    const [data, setData] = useState(null);
+
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch('https://api.example.com/data');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const jsonData = await response.json();
+            setData(jsonData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     useEffect(() => {
         const backAction = () => {
@@ -17,6 +32,7 @@ const SideMenu = () => {
         const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 
         return () => backHandler.remove(); // Limpiar el manejador al desmontar el componente
+        fetchData();
     }, [isOpen]);
 
     const toggleMenu = () => {
